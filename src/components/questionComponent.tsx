@@ -15,9 +15,13 @@ export const QuestionComponent: FC<iQuestionComponent> = ({ page, question, onAn
           <Image src={`/img/logo.png`} height="100%" width="100%" layout="responsive" objectFit="cover" />
         </div>
       </div>
-      <div className={`bg-white p-4 md:px-10 md:pb-10 w-full md:w-[50%] shadow-2xl rounded-xl relative z-50`}>
+      <div
+        className={`bg-white p-4 md:px-10 md:pb-10 w-full md:w-[50%] shadow-2xl rounded-xl relative z-50 mb-20 ${
+          page === 4 || page === 3 ? `` : `mt-10 md:mt-0`
+        }`}
+      >
         <div className="h-12 w-12 bg-[#8662BD] absolute -top-5 left-[45%] rounded-full shadow-2xl"></div>
-        <div className="bg-[#2A3257] text-white rounded-md p-4 mt-10">
+        <div className="bg-[#2A3257] text-white rounded-md p-4 mt-10 text-xs font-semibold md:text-md">
           <p>
             {page}. {question[page].question}
           </p>

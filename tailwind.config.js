@@ -17,6 +17,7 @@ module.exports = {
         "header-mobile": "url('/img/header-mobile.png')",
         "header-desktop": "url('/img/header-desktop.png')",
         footer: "url('/img/footer.png')",
+        "footer-mobile": "url('/img/footer-mobile.png')",
         button: "url('/img/button.png')",
         box: "url('/img/box.png')",
         panah: "url('/img/spin-panah.png')",

@@ -203,7 +203,7 @@ const Home: NextPage = () => {
         <motion.div
           key={page}
           exit={{ opacity: 0 }}
-          className="h-screen w-screen flex flex-col overflow-y-hidden items-center xl:justify-start justify-center bg-spin-mobile md:bg-spin-desktop bg-cover"
+          className="noselect h-screen w-screen flex flex-col overflow-y-hidden items-center xl:justify-start justify-center bg-spin-mobile md:bg-spin-desktop bg-cover"
           style={{ backgroundSize: "100% 100%" }}
         >
           <Modal status={modalGift.status}>
