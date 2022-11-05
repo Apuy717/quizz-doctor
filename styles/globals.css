@@ -1,26 +1,100 @@
-html,
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Gotham';
+  font-weight: 400;
+  font-style: normal;
+  src: url('/font/Gotham-Bold.otf');
+  src: url('/font/GothamMedium.ttf');
+  src: url('/font/Gotham-Book.otf');
+}
+
 body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: Gotham;
+  font-weight: normal;
+  overflow-x: hidden;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.crescendo {
+  animation: crescendo 1.5s alternate infinite ease-in;
 }
 
-* {
-  box-sizing: border-box;
-}
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+@keyframes crescendo {
+  0% {
+    transform: scale(1);
   }
-  body {
-    color: white;
-    background: black;
+
+  100% {
+    transform: scale(1.1);
+  }
+}
+
+.button--disapear {
+  display: none;
+}
+
+@keyframes scale-display {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+    -webkit-transform: scale(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    -webkit-transform: scale(1);
+  }
+}
+
+@keyframes scale-display--reversed {
+  0% {
+    display: inline-flex;
+    opacity: 1;
+    transform: scale(1);
+    -webkit-transform: scale(1);
+  }
+
+  99% {
+    display: inline-flex;
+    opacity: 0;
+    transform: scale(0);
+    -webkit-transform: scale(0);
+  }
+
+  100% {
+    display: none;
+    opacity: 0;
+    transform: scale(0);
+    -webkit-transform: scale(0);
+  }
+}
+
+.modals {
+  animation: fadeIn ease-in-out .5s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
   }
 }
