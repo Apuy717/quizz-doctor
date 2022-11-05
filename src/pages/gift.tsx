@@ -6,6 +6,7 @@ import Image from "next/image";
 import { toast } from "react-toastify";
 import { AnswerContext } from "../contexts/answerContext";
 import { useRouter } from "next/router";
+import { motion } from "framer-motion";
 
 const Gift: NextPage = () => {
   //payung 50%
@@ -68,9 +69,18 @@ const Gift: NextPage = () => {
   };
 
   const { push } = useRouter();
+  const content = {
+    animate: {
+      transition: { staggerChildren: 0.1 },
+    },
+  };
 
   return (
-    <div
+    <motion.div
+      variants={content}
+      animate="animate"
+      initial="initial"
+      exit={{ opacity: 0 }}
       className="h-screen w-screen flex flex-col items-center xl:justify-start justify-center bg-spin-mobile md:bg-spin-desktop bg-cover"
       style={{ backgroundSize: "100% 100%" }}
     >
@@ -98,7 +108,7 @@ const Gift: NextPage = () => {
       <div className="md:mt-[4%] scale-[.65] sm:scale-[.70] md:scale-100">
         <WheelComponent items={items} selectItem={selectItem} selectedItem={selectedItem} />
       </div>
-    </div>
+    </motion.div>
   );
 };
 

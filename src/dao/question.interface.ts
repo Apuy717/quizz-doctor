@@ -4,7 +4,7 @@ export interface iQuestion {
   answer: string | null;
 }
 
-interface iListQuestion {
+export interface iListQuestion {
   key: string;
   value: string;
 }
