@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { FC } from "react";
+import { BiRegistered } from "react-icons/bi";
 import { iQuestionComponent } from "./questionComponent.interface";
 
 export const QuestionComponent: FC<iQuestionComponent> = ({ page, question, onAnswer, children }) => {
@@ -21,10 +22,45 @@ export const QuestionComponent: FC<iQuestionComponent> = ({ page, question, onAn
         }`}
       >
         <div className="h-12 w-12 bg-[#8662BD] absolute -top-5 left-[45%] rounded-full shadow-2xl"></div>
-        <div className="bg-[#2A3257] text-white rounded-md p-4 mt-10 text-xs font-semibold md:text-md">
-          <p>
-            {page}. {question[page - 1].question}
-          </p>
+        <div className="bg-[#2A3257] text-white rounded-md p-4 mt-10 text-xs font-semibold md:text-md flex flex-row">
+          {page === 5 ? (
+            <>
+              <p>{page}. Apa komposisi dari SYNEO</p>
+              <span className="text-[0.4rem] -mt-1">R</span>
+              <p>&nbsp;?</p>
+            </>
+          ) : (
+            <></>
+          )}
+          {page === 6 ? (
+            <>
+              <p>{page}. SYNEOR</p>
+              <span className="text-[0.4rem] -mt-1">R</span>
+              <p>&nbsp;Terbukti Klinis untuk...</p>
+            </>
+          ) : (
+            <></>
+          )}
+
+          {page === 7 ? (
+            <>
+              <p>{page}. Nutribaby Royal</p>
+              <span className="text-[0.4rem] -mt-1">+</span>
+              <p>&nbsp;Cesabio...</p>
+            </>
+          ) : (
+            <></>
+          )}
+
+          {page !== 5 && page !== 6 && page !== 7 ? (
+            <>
+              <p>
+                {page}. {question[page - 1].question}
+              </p>
+            </>
+          ) : (
+            <></>
+          )}
         </div>
         {question[page - 1].listAnswer.map((i, k) => (
           <motion.div

@@ -221,7 +221,7 @@ const Home: NextPage = () => {
               className="bg-[#8E3DF4] text-white rounded p-2 mb-5"
               onClick={() => {
                 soundSuccess.play();
-                toast("Selamat hadiah berhasil di claim");
+                toast("Terimakasih telah mengikuti kuis Nutricia");
                 setModalGift({ ...modalGift, status: false });
                 const sendAnswer = {
                   email: email,
@@ -229,9 +229,9 @@ const Home: NextPage = () => {
                   gift: gift,
                 };
                 console.log("send data to db", sendAnswer);
-                setTimeout(() => {
-                  push("https://ve.virtualevent.id/hybrid/pit_ika_nutricia/lobby");
-                }, 5000);
+                // setTimeout(() => {
+                //   push("https://ve.virtualevent.id/hybrid/pit_ika_nutricia/lobby");
+                // }, 5000);
               }}
             >
               Claim
