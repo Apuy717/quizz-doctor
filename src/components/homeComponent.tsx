@@ -11,6 +11,12 @@ import { Modal } from "./modal";
 export const HomeComponent: FC<iHomeComponent> = ({ page, onPlay, onAbout }) => {
   const [isAbout, setIsAbout] = useState<boolean>(false);
   const [sound] = useState<Howl>(new Howl({ src: ["/audio/button-3.mp3"] }));
+
+  const closeAbout = () => {
+    setIsAbout(false);
+    sound.play();
+  };
+
   return (
     <motion.div
       key={page}
@@ -52,7 +58,7 @@ export const HomeComponent: FC<iHomeComponent> = ({ page, onPlay, onAbout }) => 
         style={{ backgroundSize: "100%, 100%" }}
       ></div>
       <Modal status={isAbout}>
-        <div className="flex flex-col items-center justify-center pb-10">
+        <div className="flex flex-col items-center justify-center pb-10" onClick={closeAbout}>
           <div className="bg-white rounded-md m-5 shadow-2xl border relative">
             <div className="absolute left-0 -top-5 w-full flex items-center justify-center">
               <div className="w-10 h-10 bg-[#8662BD] shadow-2xl rounded-full" />
@@ -82,13 +88,7 @@ export const HomeComponent: FC<iHomeComponent> = ({ page, onPlay, onAbout }) => 
               </p>
             </div>
           </div>
-          <button
-            className="bg-red-600 hover:bg-red-700 rounded text-xs p-2 text-white"
-            onClick={() => {
-              setIsAbout(false);
-              sound.play();
-            }}
-          >
+          <button className="bg-red-600 hover:bg-red-700 rounded text-xs p-2 text-white" onClick={closeAbout}>
             Tutup
           </button>
         </div>
