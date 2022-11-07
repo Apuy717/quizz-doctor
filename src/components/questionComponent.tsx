@@ -23,10 +23,10 @@ export const QuestionComponent: FC<iQuestionComponent> = ({ page, question, onAn
         <div className="h-12 w-12 bg-[#8662BD] absolute -top-5 left-[45%] rounded-full shadow-2xl"></div>
         <div className="bg-[#2A3257] text-white rounded-md p-4 mt-10 text-xs font-semibold md:text-md">
           <p>
-            {page}. {question[page].question}
+            {page}. {question[page - 1].question}
           </p>
         </div>
-        {question[page].listAnswer.map((i, k) => (
+        {question[page - 1].listAnswer.map((i, k) => (
           <motion.div
             key={k}
             className={`cursor-pointer text-xs md:text-md text-center mt-4 p-2 border border-[#2A3257] lg:hover:bg-[#2A3257] lg:hover:text-white rounded-md`}

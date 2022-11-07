@@ -180,7 +180,13 @@ const Home: NextPage = () => {
           page={page}
           question={question.question}
           onAnswer={(i) => {
-            handleAns(`${page}`, question.question[page].question, i.key, i.value, question.question[page].answer);
+            handleAns(
+              `${page - 1}`,
+              question.question[page - 1].question,
+              i.key,
+              i.value,
+              question.question[page - 1].answer
+            );
           }}
         >
           <Modal status={modal.status}>

@@ -45,20 +45,7 @@ class Question {
       answer: null,
     },
     {
-      question:
-        "Menurut Dokter, jenis formula apa yang paling sesuai untuk anak yang lahir secara C-section dan belum beruntung mendapatkan ASI?",
-      listAnswer: [
-        { key: "a", value: "Formula standar tanpa tambahan nutrisi khusus" },
-        { key: "b", value: "Formula Standar dengan tambahan prebiotik, probiotik, atau sinbiotik" },
-        { key: "c", value: "Formula PHP tanpa tambahan nutrisi khusus" },
-        { key: "d", value: "Formula PHP dengan tambahan prebiotik, probiotik, atau sinbiotik" },
-        { key: "e", value: "Formula terhidrolisa ekstensif" },
-        { key: "f", value: "Lainnya…." },
-      ],
-      answer: null,
-    },
-    {
-      question: "Apa komposisi dari SYNEOR?",
+      question: "Apa komposisi dari SYNEO?",
       listAnswer: [
         { key: "a", value: "SYNEO adalah prebiotik lcFOS:scGOS 1:9 yang 5x lebih tinggi" },
         { key: "b", value: "SYNEO adalah protein yang lebih tinggi" },
@@ -72,7 +59,7 @@ class Question {
       answer: "c",
     },
     {
-      question: "SYNEOR Terbukti Klinis untuk ….",
+      question: "SYNEOR Terbukti Klinis untuk ...",
       listAnswer: [
         {
           key: "a",
