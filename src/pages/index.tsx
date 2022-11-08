@@ -239,12 +239,12 @@ const Home: NextPage<{ emailProps: string | null }> = ({ emailProps }) => {
               setPage(1);
               sound.play();
             } else {
+              sound.play();
               toast.warning("Anda telah mengikuti kuis ini sebelumnya");
             }
           }}
           onAbout={() => {
             sound.play();
-            alert("feature comming soon");
           }}
         />
       ) : //======================================== End Home Component ========================================//
