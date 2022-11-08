@@ -52,7 +52,7 @@ const Home: NextPage = () => {
               <GiCheckMark className="text-green-500" />
             </div>
           ),
-          msg: "Benarrrr",
+          msg: "Jawaban Anda benar",
           status: true,
         });
         return;
@@ -75,7 +75,7 @@ const Home: NextPage = () => {
             <AiOutlineClose className="text-red-500" />
           </div>
         ),
-        msg: "Salah",
+        msg: `Jawaban anda belum tepat, jawaban yang benar adalah (${answerTrue.toUpperCase()})`,
         status: true,
       });
       return;
@@ -144,7 +144,7 @@ const Home: NextPage = () => {
       soundWheel.play();
       setTimeout(() => {
         const g = items[selectedItem];
-        setModalGift({ status: true, msg: `Yeeee Anda mendapatkan ${g.text}`, img: g.img });
+        setModalGift({ status: true, msg: `Selamat Anda mendapatkan ${g.text}`, img: g.img });
         soundWheel.stop();
         soundGift.play();
       }, 4100);
