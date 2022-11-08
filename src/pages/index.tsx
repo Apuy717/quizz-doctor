@@ -3,7 +3,7 @@ import { Howl } from "howler";
 import type { NextPage } from "next";
 import Image from "next/image";
 import { useContext, useState } from "react";
-import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineLoading3Quarters } from "react-icons/ai";
 import { GiCheckMark } from "react-icons/gi";
 import { toast } from "react-toastify";
 import { HomeComponent } from "../components/homeComponent";
@@ -155,7 +155,7 @@ const Home: NextPage = () => {
   //======================================== End Gift helper  ========================================//
 
   //======================================== API helper  ========================================//
-
+  const [loading, setLoading] = useState<boolean>(false);
   const submitAnswer = async () => {
     const body = {
       tbl_t_events_id: 28,
@@ -179,21 +179,25 @@ const Home: NextPage = () => {
           setGift("");
           setIsClaim(false);
           setModalGift({ ...modalGift, status: false });
+          setLoading(false);
         }
         if (res.message) {
           if (res?.message.includes("Email tidak ditemukan")) {
             toast.error(
               `Email yang anda masukan tidak sesuai dengan buku tamu, pastikan anda telah mengisi buku tamu.!`
             );
+            setLoading(false);
           }
         }
       })
       .catch((err) => {
         toast.error(`failed, something went wrong`);
+        setLoading(false);
       });
   };
 
   const preSubmitAnswer = async () => {
+    setLoading(true);
     if (email.length === 0) {
       setInputEmailErr("Email tidak boleh kosong");
       return;
@@ -207,7 +211,9 @@ const Home: NextPage = () => {
       .then((r) => r.json())
       .then((res) => {
         if (res.email) {
+          setLoading(false);
           toast.warning("Anda telah mengikuti kuis ini sebelumnya");
+          setModalGift({ ...modalGift, status: false });
         }
 
         if (res.message) {
@@ -216,7 +222,10 @@ const Home: NextPage = () => {
           }
         }
       })
-      .catch((err) => toast.error("failed, something went wrong!!"));
+      .catch((err) => {
+        toast.error("failed, something went wrong!!");
+        setLoading(false);
+      });
   };
 
   //======================================== End API helper  ========================================//
@@ -303,19 +312,22 @@ const Home: NextPage = () => {
             >
               <p className="absolute -bottom-5 left-4 text-xs text-red-500">{inputEmailErr}</p>
               <input
+                autoFocus
                 type="email"
                 placeholder="Email"
                 className="border focus:outline-none p-2 mr-2 rounded flex-1 focus:border-[#8E3DF4]"
                 onChange={(e) => validateInputEmail(e.target.value)}
               />
               <button
-                className="bg-[#8E3DF4] text-white rounded p-2"
+                className={`bg-[#8E3DF4] text-white rounded p-2 text-center flex items-center justify-center`}
                 onClick={() => {
-                  soundSuccess.play();
-                  preSubmitAnswer();
+                  if (!loading) {
+                    soundSuccess.play();
+                    preSubmitAnswer();
+                  }
                 }}
               >
-                Claim
+                {loading ? <AiOutlineLoading3Quarters className="animate-spin h-5 w-5 mx-2" /> : `Claim`}
               </button>
             </div>
             <button
