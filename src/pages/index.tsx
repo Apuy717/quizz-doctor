@@ -1,9 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Howl } from "howler";
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { GiCheckMark } from "react-icons/gi";
 import { toast } from "react-toastify";
@@ -14,7 +14,15 @@ import { WheelComponent } from "../components/wheelComponent";
 import { AnswerContext } from "../contexts/answerContext";
 import question from "../dao/question";
 
-const Home: NextPage = () => {
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const emailProps: string | null = query.email ? `${query.email}` : null;
+  return {
+    props: { emailProps },
+  };
+};
+
+const Home: NextPage<{ emailProps: string | null }> = ({ emailProps }) => {
+  const [canFollow, setCanFollow] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
   const [modal, setModal] = useState<{ icon: any; msg: string; status: boolean }>({ icon: "", msg: "", status: false });
   const { push } = useRouter();
@@ -151,10 +159,73 @@ const Home: NextPage = () => {
 
       setSelectedItem(selectedItem);
     } else {
-      // setSelectedItem(null);
+      setSelectedItem(null);
     }
   };
   //======================================== End Gift helper  ========================================//
+
+  //======================================== API helper  ========================================//
+
+  const submitAnswer = async () => {
+    const body = {
+      tbl_t_events_id: 28,
+      email: emailProps ? emailProps : "test@mail.com",
+      gift: gift,
+      answer: answer,
+    };
+    await fetch("https://be.virtualevent.id/api/game/insert", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(body),
+    })
+      .then((r) => r.json())
+      .then((res) => {
+        if (res?.email) {
+          toast("Terimakasih telah mengikuti kuis Nutricia");
+        }
+        if (res.message) {
+          if (res?.message.includes("Email tidak ditemukan")) {
+            toast.error(`${res.message}, silahkan isi dulu buku tamu`);
+          }
+        }
+      })
+      .catch((err) => {
+        toast.error(`failed, something went wrong`);
+      });
+  };
+
+  const gotAnswerByEmail = async () => {
+    await fetch(
+      `https://be.virtualevent.id/api/game?email=${emailProps ? emailProps : `test@mail.com`}&tbl_t_events_id=28`,
+      {
+        method: "GET",
+        headers: {
+          "content-type": "application/json",
+        },
+      }
+    )
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.email) {
+          toast.warning("Anda telah mengikuti kuis ini sebelumnya");
+          setCanFollow(false);
+        }
+
+        if (res.message) {
+          if (res.message.includes("Data tidak ditemukan")) {
+            setCanFollow(true);
+          }
+        }
+      })
+      .catch((err) => toast.error("failed, something went wrong!!"));
+  };
+
+  useEffect(() => {
+    gotAnswerByEmail();
+  }, []);
+  //======================================== End API helper  ========================================//
 
   return (
     <AnimatePresence exitBeforeEnter>
@@ -164,8 +235,12 @@ const Home: NextPage = () => {
           key={page}
           page={page}
           onPlay={() => {
-            setPage(1);
-            sound.play();
+            if (canFollow) {
+              setPage(1);
+              sound.play();
+            } else {
+              toast.warning("Anda telah mengikuti kuis ini sebelumnya");
+            }
           }}
           onAbout={() => {
             sound.play();
@@ -191,7 +266,7 @@ const Home: NextPage = () => {
         >
           <Modal status={modal.status}>
             {modal.icon}
-            <p className="animate-pulse">{modal.msg}</p>
+            <p className="animate-pulse mx-4">{modal.msg}</p>
             <button
               className="my-4 h-12 w-32 bg-button bg-cover bg-center bg-no-repeat"
               style={{ backgroundSize: "100%, 100%" }}
@@ -221,17 +296,8 @@ const Home: NextPage = () => {
               className="bg-[#8E3DF4] text-white rounded p-2 mb-5"
               onClick={() => {
                 soundSuccess.play();
-                toast("Terimakasih telah mengikuti kuis Nutricia");
                 setModalGift({ ...modalGift, status: false });
-                const sendAnswer = {
-                  email: email,
-                  answer: answer,
-                  gift: gift,
-                };
-                console.log("send data to db", sendAnswer);
-                // setTimeout(() => {
-                //   push("https://ve.virtualevent.id/hybrid/pit_ika_nutricia/lobby");
-                // }, 5000);
+                submitAnswer();
               }}
             >
               Claim
