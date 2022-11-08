@@ -1,9 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Howl } from "howler";
-import type { GetServerSideProps, NextPage } from "next";
+import type { NextPage } from "next";
 import Image from "next/image";
-import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { GiCheckMark } from "react-icons/gi";
 import { toast } from "react-toastify";
@@ -14,25 +13,16 @@ import { WheelComponent } from "../components/wheelComponent";
 import { AnswerContext } from "../contexts/answerContext";
 import question from "../dao/question";
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const emailProps: string | null = query.e ? `${query.e}` : null;
-  return {
-    props: { emailProps },
-  };
-};
-
-const Home: NextPage<{ emailProps: string | null }> = ({ emailProps }) => {
-  const [canFollow, setCanFollow] = useState<boolean>(false);
+const Home: NextPage = () => {
   const [page, setPage] = useState<number>(0);
   const [modal, setModal] = useState<{ icon: any; msg: string; status: boolean }>({ icon: "", msg: "", status: false });
-  const { push } = useRouter();
   const [sound] = useState<Howl>(new Howl({ src: ["/audio/button-3.mp3"] }));
   const [soundWheel] = useState<Howl>(new Howl({ src: ["/audio/spin-wheel.mp3"] }));
   const [soundSuccess] = useState<Howl>(new Howl({ src: ["/audio/success.mp3"] }));
   const [soundFailed] = useState<Howl>(new Howl({ src: ["/audio/failed.mp3"] }));
   const [soundGift] = useState<Howl>(new Howl({ src: ["/audio/gift-win.mp3"] }));
+  const { answer, setAnswer, gift, setGift, email, setEmail } = useContext(AnswerContext);
 
-  const { answer, setAnswer, gift, setGift, email } = useContext(AnswerContext);
   const handleAns = (
     keyQuestion: string,
     valQuestion: string,
@@ -159,7 +149,7 @@ const Home: NextPage<{ emailProps: string | null }> = ({ emailProps }) => {
 
       setSelectedItem(selectedItem);
     } else {
-      setSelectedItem(null);
+      // setSelectedItem(null);
     }
   };
   //======================================== End Gift helper  ========================================//
@@ -169,7 +159,7 @@ const Home: NextPage<{ emailProps: string | null }> = ({ emailProps }) => {
   const submitAnswer = async () => {
     const body = {
       tbl_t_events_id: 28,
-      email: emailProps ? emailProps : "test@mail.com",
+      email: email,
       gift: gift,
       answer: answer,
     };
@@ -184,10 +174,17 @@ const Home: NextPage<{ emailProps: string | null }> = ({ emailProps }) => {
       .then((res) => {
         if (res?.email) {
           toast("Terimakasih telah mengikuti kuis Nutricia");
+          setEmail("");
+          setAnswer([]);
+          setGift("");
+          setIsClaim(false);
+          setModalGift({ ...modalGift, status: false });
         }
         if (res.message) {
           if (res?.message.includes("Email tidak ditemukan")) {
-            toast.error(`${res.message}, silahkan isi dulu buku tamu`);
+            toast.error(
+              `Email yang anda masukan tidak sesuai dengan buku tamu, pastikan anda telah mengisi buku tamu.!`
+            );
           }
         }
       })
@@ -196,36 +193,48 @@ const Home: NextPage<{ emailProps: string | null }> = ({ emailProps }) => {
       });
   };
 
-  const gotAnswerByEmail = async () => {
-    await fetch(
-      `https://be.virtualevent.id/api/game?email=${emailProps ? emailProps : `test@mail.com`}&tbl_t_events_id=28`,
-      {
-        method: "GET",
-        headers: {
-          "content-type": "application/json",
-        },
-      }
-    )
+  const preSubmitAnswer = async () => {
+    if (email.length === 0) {
+      setInputEmailErr("Email tidak boleh kosong");
+      return;
+    }
+    await fetch(`https://be.virtualevent.id/api/game?email=${email}&tbl_t_events_id=28`, {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+      },
+    })
       .then((r) => r.json())
       .then((res) => {
         if (res.email) {
           toast.warning("Anda telah mengikuti kuis ini sebelumnya");
-          setCanFollow(false);
         }
 
         if (res.message) {
           if (res.message.includes("Data tidak ditemukan")) {
-            setCanFollow(true);
+            submitAnswer();
           }
         }
       })
       .catch((err) => toast.error("failed, something went wrong!!"));
   };
 
-  useEffect(() => {
-    gotAnswerByEmail();
-  }, []);
   //======================================== End API helper  ========================================//
+
+  //======================================== Claim helper  ========================================//
+  const [isClaim, setIsClaim] = useState<boolean>(false);
+  const [inputEmailErr, setInputEmailErr] = useState<string>("");
+  const validateInputEmail = (e: string) => {
+    setEmail(e);
+    if (!e) {
+      setInputEmailErr("Email required");
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(e)) {
+      setInputEmailErr("Format email tidak valid");
+    } else {
+      setInputEmailErr("");
+    }
+  };
+  //======================================== End Claim helper  ========================================//
 
   return (
     <AnimatePresence exitBeforeEnter>
@@ -235,13 +244,8 @@ const Home: NextPage<{ emailProps: string | null }> = ({ emailProps }) => {
           key={page}
           page={page}
           onPlay={() => {
-            if (canFollow) {
-              setPage(1);
-              sound.play();
-            } else {
-              sound.play();
-              toast.warning("Anda telah mengikuti kuis ini sebelumnya");
-            }
+            setPage(1);
+            sound.play();
           }}
           onAbout={() => {
             sound.play();
@@ -291,13 +295,34 @@ const Home: NextPage<{ emailProps: string | null }> = ({ emailProps }) => {
             <div className="h-[10rem] w-[10rem] mb-2 relative">
               <Image src={`${modalGift.img}`} width="100%" height={"100%"} layout="fill" objectFit="contain" />
             </div>
-            <p className="my-4 font-bold">{modalGift.msg}</p>
+            <p className="my-4 font-bold text-center">{modalGift.msg}</p>
+            <div
+              className={`mb-10 w-full px-4 flex flex-row items-center justify-center relative ${
+                isClaim ? `` : `hidden`
+              }`}
+            >
+              <p className="absolute -bottom-5 left-4 text-xs text-red-500">{inputEmailErr}</p>
+              <input
+                type="email"
+                placeholder="Email"
+                className="border focus:outline-none p-2 mr-2 rounded flex-1 focus:border-[#8E3DF4]"
+                onChange={(e) => validateInputEmail(e.target.value)}
+              />
+              <button
+                className="bg-[#8E3DF4] text-white rounded p-2"
+                onClick={() => {
+                  soundSuccess.play();
+                  preSubmitAnswer();
+                }}
+              >
+                Claim
+              </button>
+            </div>
             <button
-              className="bg-[#8E3DF4] text-white rounded p-2 mb-5"
+              className={`bg-[#8E3DF4] text-white rounded p-2 mb-5 ${isClaim ? `hidden` : `block`}`}
               onClick={() => {
                 soundSuccess.play();
-                setModalGift({ ...modalGift, status: false });
-                submitAnswer();
+                setIsClaim(true);
               }}
             >
               Claim
