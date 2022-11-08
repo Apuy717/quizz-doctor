@@ -15,7 +15,7 @@ import { AnswerContext } from "../contexts/answerContext";
 import question from "../dao/question";
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const emailProps: string | null = query.email ? `${query.email}` : null;
+  const emailProps: string | null = query.e ? `${query.e}` : null;
   return {
     props: { emailProps },
   };
