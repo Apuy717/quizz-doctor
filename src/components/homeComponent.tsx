@@ -26,7 +26,12 @@ export const HomeComponent: FC<iHomeComponent> = ({ page, onPlay, onAbout }) => 
       <div className="w-full md:w-[25%] h-auto relative -mt-40 animate-[wiggle_3s_ease-in-out_infinite]">
         <Image src={`/img/logo.png`} height="100%" width="100%" layout="responsive" objectFit="cover" />
       </div>
-      <div className="flex flex-row z-10">
+      <div className="-mt-10 z-50 px-5 w-full md:w-[40%]">
+        <p className="text-center text-red-700 font-bold">
+          Survey dan quiz ini berdasarkan materi yang berada di learning booth. Apakah anda sudah membaca materingnya?
+        </p>
+      </div>
+      <div className="flex flex-row z-10 mt-4">
         <div className="flex flex-col items-center justify-center mr-5">
           <button
             onClick={onPlay}

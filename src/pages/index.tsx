@@ -73,7 +73,9 @@ const Home: NextPage = () => {
             <AiOutlineClose className="text-red-500" />
           </div>
         ),
-        msg: `Jawaban anda belum tepat, jawaban yang benar adalah (${answerTrue.toUpperCase()})`,
+        msg: `Jawaban anda belum tepat, jawaban yang benar adalah : (${answerTrue.toUpperCase()}. ${
+          question.question[page - 1].listAnswer.find((f) => f.key === answerTrue)?.value
+        }`,
         status: true,
       });
       return;
@@ -279,7 +281,11 @@ const Home: NextPage = () => {
         >
           <Modal status={modal.status}>
             {modal.icon}
-            <p className="animate-pulse mx-4">{modal.msg}</p>
+            <p className="animate-pulse mx-4">
+              {modal.msg.split("(")[0]}
+              <span className="font-bold">{modal.msg.split("(").length >= 2 ? modal.msg.split("(")[1] : ``}</span>
+            </p>
+
             <button
               className="my-4 h-12 w-32 bg-button bg-cover bg-center bg-no-repeat"
               style={{ backgroundSize: "100%, 100%" }}
