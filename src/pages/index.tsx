@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Howl } from "howler";
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Image from "next/image";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AiOutlineClose, AiOutlineLoading3Quarters } from "react-icons/ai";
 import { GiCheckMark } from "react-icons/gi";
 import { toast } from "react-toastify";
@@ -13,7 +13,14 @@ import { WheelComponent } from "../components/wheelComponent";
 import { AnswerContext } from "../contexts/answerContext";
 import question from "../dao/question";
 
-const Home: NextPage = () => {
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const id: string | null = query.id ? `${query.id}` : null;
+  return {
+    props: { id },
+  };
+};
+
+const Home: NextPage<{ id: string | null }> = ({ id }) => {
   const [page, setPage] = useState<number>(0);
   const [modal, setModal] = useState<{ icon: any; msg: string; status: boolean }>({ icon: "", msg: "", status: false });
   const [sound] = useState<Howl>(new Howl({ src: ["/audio/button-3.mp3"] }));
@@ -158,10 +165,13 @@ const Home: NextPage = () => {
 
   //======================================== API helper  ========================================//
   const [loading, setLoading] = useState<boolean>(false);
+  const [isRejected, setIsRejected] = useState<{ err: string; status: boolean }>({ err: "Loading...", status: true });
   const submitAnswer = async () => {
+    setLoading(true);
+    soundSuccess.play();
     const body = {
       tbl_t_events_id: 28,
-      email: email,
+      id: id,
       gift: gift,
       answer: answer,
     };
@@ -174,20 +184,19 @@ const Home: NextPage = () => {
     })
       .then((r) => r.json())
       .then((res) => {
-        if (res?.email) {
+        if (res.email) {
           toast("Terimakasih telah mengikuti kuis Nutricia");
-          setEmail("");
+          setModalGift({ status: false, msg: "", img: "/" });
           setAnswer([]);
           setGift("");
-          setIsClaim(false);
-          setModalGift({ ...modalGift, status: false });
           setLoading(false);
         }
         if (res.message) {
-          if (res?.message.includes("Email tidak ditemukan")) {
-            toast.error(
-              `Email yang anda masukan tidak sesuai dengan buku tamu, pastikan anda telah mengisi buku tamu.!`
-            );
+          if (res.message.includes("ID tidak ditemukan")) {
+            toast.warning("Silahkan isi buku tamu terlebih dahulu, pastikan query url yang anda masukan telah sesuai");
+            setAnswer([]);
+            setGift("");
+            setModalGift({ status: false, msg: "", img: "/" });
             setLoading(false);
           }
         }
@@ -199,12 +208,7 @@ const Home: NextPage = () => {
   };
 
   const preSubmitAnswer = async () => {
-    setLoading(true);
-    if (email.length === 0) {
-      setInputEmailErr("Email tidak boleh kosong");
-      return;
-    }
-    await fetch(`https://be.virtualevent.id/api/game?email=${email}&tbl_t_events_id=28`, {
+    await fetch(`https://be.virtualevent.id/api/game/${id}`, {
       method: "GET",
       headers: {
         "content-type": "application/json",
@@ -212,41 +216,36 @@ const Home: NextPage = () => {
     })
       .then((r) => r.json())
       .then((res) => {
-        if (res.email) {
-          setLoading(false);
+        if (res.game_answer === null) {
+          setIsRejected({ err: "", status: false });
+          toast.info("boleh mengikutin kuis");
+        } else {
+          setIsRejected({ err: "Anda telah mengikuti kuis ini sebelumnya", status: true });
           toast.warning("Anda telah mengikuti kuis ini sebelumnya");
-          setModalGift({ ...modalGift, status: false });
         }
 
         if (res.message) {
           if (res.message.includes("Data tidak ditemukan")) {
-            submitAnswer();
+            toast.warning(
+              "Data user tidak ditemukan, silahkan isi buku tamu terlebih dahulu atau periksa kembali query url anda"
+            );
+            setIsRejected({
+              err: "Data user tidak ditemukan, silahkan isi buku tamu terlebih dahulu atau periksa kembali query url anda",
+              status: true,
+            });
           }
         }
       })
       .catch((err) => {
         toast.error("failed, something went wrong!!");
-        setLoading(false);
       });
   };
 
+  useEffect(() => {
+    preSubmitAnswer();
+  }, []);
+
   //======================================== End API helper  ========================================//
-
-  //======================================== Claim helper  ========================================//
-  const [isClaim, setIsClaim] = useState<boolean>(false);
-  const [inputEmailErr, setInputEmailErr] = useState<string>("");
-  const validateInputEmail = (e: string) => {
-    setEmail(e);
-    if (!e) {
-      setInputEmailErr("Email required");
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(e)) {
-      setInputEmailErr("Format email tidak valid");
-    } else {
-      setInputEmailErr("");
-    }
-  };
-  //======================================== End Claim helper  ========================================//
-
   return (
     <AnimatePresence exitBeforeEnter>
       {page === 0 ? (
@@ -255,8 +254,12 @@ const Home: NextPage = () => {
           key={page}
           page={page}
           onPlay={() => {
-            setPage(1);
             sound.play();
+            if (!isRejected.status) {
+              setPage(1);
+            } else {
+              toast.warning(isRejected.err);
+            }
           }}
           onAbout={() => {
             sound.play();
@@ -311,39 +314,10 @@ const Home: NextPage = () => {
               <Image src={`${modalGift.img}`} width="100%" height={"100%"} layout="fill" objectFit="contain" />
             </div>
             <p className="my-4 font-bold text-center">{modalGift.msg}</p>
-            <div
-              className={`mb-10 w-full px-4 flex flex-row items-center justify-center relative ${
-                isClaim ? `` : `hidden`
-              }`}
-            >
-              <p className="absolute -bottom-5 left-4 text-xs text-red-500">{inputEmailErr}</p>
-              <input
-                autoFocus
-                type="email"
-                placeholder="Email"
-                className="border focus:outline-none p-2 mr-2 rounded flex-1 focus:border-[#8E3DF4]"
-                onChange={(e) => validateInputEmail(e.target.value)}
-              />
-              <button
-                className={`bg-[#8E3DF4] text-white rounded p-2 text-center flex items-center justify-center`}
-                onClick={() => {
-                  if (!loading) {
-                    soundSuccess.play();
-                    preSubmitAnswer();
-                  }
-                }}
-              >
-                {loading ? <AiOutlineLoading3Quarters className="animate-spin h-5 w-5 mx-2" /> : `Claim`}
-              </button>
-            </div>
-            <button
-              className={`bg-[#8E3DF4] text-white rounded p-2 mb-5 ${isClaim ? `hidden` : `block`}`}
-              onClick={() => {
-                soundSuccess.play();
-                setIsClaim(true);
-              }}
-            >
-              Claim
+            <button className={`bg-[#8E3DF4] text-white rounded p-2 mb-5`} onClick={submitAnswer}>
+              {loading ? <AiOutlineLoading3Quarters className="animate-spin mx-4" /> : "Claim"}
+
+              {/* Claim */}
             </button>
           </Modal>
           <div className="md:mt-[4%] scale-[.65] sm:scale-[.70] md:scale-100">
