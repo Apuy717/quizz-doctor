@@ -208,7 +208,7 @@ const Home: NextPage<{ id: string | null }> = ({ id }) => {
   };
 
   const preSubmitAnswer = async () => {
-    await fetch(`https://be.virtualevent.id/api/game/${id}`, {
+    await fetch(`https://be.virtualevent.id/api/game/user/${id}`, {
       method: "GET",
       headers: {
         "content-type": "application/json",
@@ -216,15 +216,16 @@ const Home: NextPage<{ id: string | null }> = ({ id }) => {
     })
       .then((r) => r.json())
       .then((res) => {
-        if (res.game_answer === null) {
+        console.log(res);
+        if (res.id) {
           setIsRejected({ err: "", status: false });
-          toast.info("boleh mengikutin kuis");
-        } else {
-          setIsRejected({ err: "Anda telah mengikuti kuis ini sebelumnya", status: true });
-          toast.warning("Anda telah mengikuti kuis ini sebelumnya");
         }
 
         if (res.message) {
+          if (res.message.includes("Anda sudah mengisi data game!")) {
+            toast.warning("Anda sudah mengisi data game!");
+            setIsRejected({ err: "Anda sudah mengisi data game!", status: true });
+          }
           if (res.message.includes("Data tidak ditemukan")) {
             toast.warning(
               "Data user tidak ditemukan, silahkan isi buku tamu terlebih dahulu atau periksa kembali query url anda"
@@ -233,6 +234,10 @@ const Home: NextPage<{ id: string | null }> = ({ id }) => {
               err: "Data user tidak ditemukan, silahkan isi buku tamu terlebih dahulu atau periksa kembali query url anda",
               status: true,
             });
+          }
+          if (res.message.includes("Attempt to read property")) {
+            toast.warning("Failed, something went wrong!");
+            setIsRejected({ err: "Failed, something went wrong!", status: true });
           }
         }
       })
