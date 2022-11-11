@@ -54,7 +54,7 @@ export const WheelComponent: FC<{
           return (
             <div className="wheel-item font-semibold" key={key} style={idx}>
               <div className="flex justify-end items-center flex-row">
-                <div className="h-8 w-8 mr-1 rotate-90 origin-center">
+                <div className="h-8 w-8 mr-3 rotate-90 origin-center">
                   <Image src={i.img} width="100%" height={"100%"} layout="fill" objectFit="contain" />
                 </div>
                 <p className="text-white rotate-180 text-xs">{i.text}</p>

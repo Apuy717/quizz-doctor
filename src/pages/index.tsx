@@ -192,6 +192,13 @@ const Home: NextPage<{ id: string | null }> = ({ id }) => {
           setLoading(false);
         }
         if (res.message) {
+          if (res.message.includes("The id field is required")) {
+            toast.warning("Silahkan isi buku tamu terlebih dahulu, pastikan query url yang anda masukan telah sesuai");
+            setAnswer([]);
+            setGift("");
+            setModalGift({ status: false, msg: "", img: "/" });
+            setLoading(false);
+          }
           if (res.message.includes("ID tidak ditemukan")) {
             toast.warning("Silahkan isi buku tamu terlebih dahulu, pastikan query url yang anda masukan telah sesuai");
             setAnswer([]);
@@ -216,7 +223,6 @@ const Home: NextPage<{ id: string | null }> = ({ id }) => {
     })
       .then((r) => r.json())
       .then((res) => {
-        console.log(res);
         if (res.id) {
           setIsRejected({ err: "", status: false });
         }
