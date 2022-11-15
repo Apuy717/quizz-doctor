@@ -29,7 +29,7 @@ export const HomeComponent: FC<iHomeComponent> = ({ page, onPlay, onAbout }) => 
       <div className="-mt-10 z-50 px-5 w-full md:w-[40%]">
         <p className="text-center text-red-700 font-bold">
           Survey dan quiz ini berdasarkan materi yang berada di learning booth. Jika anda belum membacanya, silahkan
-          mengunjungi learning booth?
+          mengunjungi learning booth!
         </p>
       </div>
       <div className="flex flex-row z-10 mt-4">
