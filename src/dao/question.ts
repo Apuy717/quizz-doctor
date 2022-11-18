@@ -2,11 +2,12 @@ import { iQuestion } from "./question.interface";
 class Question {
   public question: iQuestion[] = [
     {
-      question: "Dari antara pasien yang berkonsultasi dengan Dokter, berapa banyak yang memiliki riwayat lahir sesar?",
+      question:
+        "Dari antara pasien yang berkonsultasi dengan Dokter selama seminggu, berapa banyak yang memiliki riwayat lahir sesar?",
       listAnswer: [
         { key: "a", value: "< 5 pasien" },
         { key: "b", value: "5-10 pasien" },
-        { key: "c", value: "10 pasien" },
+        { key: "c", value: "> 10 pasien" },
         { key: "d", value: "Tidak ada" },
       ],
       answer: null,

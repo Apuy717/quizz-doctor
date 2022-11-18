@@ -3,7 +3,7 @@ import { Howl } from "howler";
 import type { GetServerSideProps, NextPage } from "next";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
-import { AiOutlineClose, AiOutlineLoading3Quarters } from "react-icons/ai";
+import { AiOutlineCheck, AiOutlineCheckCircle, AiOutlineClose, AiOutlineLoading3Quarters } from "react-icons/ai";
 import { GiCheckMark } from "react-icons/gi";
 import { toast } from "react-toastify";
 import { HomeComponent } from "../components/homeComponent";
@@ -252,9 +252,18 @@ const Home: NextPage<{ id: string | null }> = ({ id }) => {
       });
   };
 
+  const [modalThanks, setModalThanks] = useState<boolean>(true);
   useEffect(() => {
     preSubmitAnswer();
   }, []);
+
+  useEffect(() => {
+    if (page >= 8) {
+      setTimeout(() => {
+        setModalThanks(false);
+      }, 1000 * 10);
+    }
+  }, [page]);
 
   //======================================== End API helper  ========================================//
   return (
@@ -266,6 +275,7 @@ const Home: NextPage<{ id: string | null }> = ({ id }) => {
           page={page}
           onPlay={() => {
             sound.play();
+            // setPage(1);
             if (!isRejected.status) {
               setPage(1);
             } else {
@@ -327,8 +337,19 @@ const Home: NextPage<{ id: string | null }> = ({ id }) => {
             <p className="my-4 font-bold text-center">{modalGift.msg}</p>
             <button className={`bg-[#8E3DF4] text-white rounded p-2 mb-5`} onClick={submitAnswer}>
               {loading ? <AiOutlineLoading3Quarters className="animate-spin mx-4" /> : "Claim"}
-
               {/* Claim */}
+            </button>
+          </Modal>
+
+          <Modal status={modalThanks}>
+            <div className="p-2 border rounded-full border-green-600 mb-10">
+              <AiOutlineCheck className="w-32 h-32 text-green-500" />
+            </div>
+            <p className="mb-10 mx-10 font-bold text-center">
+              Selamat telah menyelesaikan Quiz dan Survey! Putar Lucky wheels untuk mendapatkan hadiah Anda!
+            </p>
+            <button className={`bg-[#8E3DF4] text-white rounded p-2 mb-5`} onClick={() => setModalThanks(false)}>
+              OK
             </button>
           </Modal>
           <div className="md:mt-[4%] scale-[.65] sm:scale-[.70] md:scale-100">
