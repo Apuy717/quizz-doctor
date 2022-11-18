@@ -27,9 +27,9 @@ export const HomeComponent: FC<iHomeComponent> = ({ page, onPlay, onAbout }) => 
         <Image src={`/img/logo.png`} height="100%" width="100%" layout="responsive" objectFit="cover" />
       </div>
       <div className="-mt-10 z-50 px-5 w-full md:w-[40%]">
-        <p className="font-extrabold text-transparent text-xl uppercase text-center bg-clip-text bg-gradient-to-b from-red-700 to-[#3D0E55]">
+        <p className="text-transparent text-xl text-center bg-clip-text bg-gradient-to-b from-red-700 to-[#3D0E55]">
           Survey dan quiz ini berdasarkan materi yang berada di learning booth. Jika anda belum membacanya, silahkan
-          mengunjungi learning booth!
+          mengunjungi <strong className="uppercase font-extrabold">learning booth!</strong>
         </p>
       </div>
       <div className="flex flex-row z-10 mt-4">
