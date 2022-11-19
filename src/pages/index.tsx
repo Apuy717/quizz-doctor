@@ -185,7 +185,7 @@ const Home: NextPage<{ id: string | null }> = ({ id }) => {
       .then((r) => r.json())
       .then((res) => {
         if (res.email) {
-          toast("Terimakasih telah mengikuti kuis Nutricia");
+          toast("Terima kasih atas partisipasi anda. Silahkan tutup windows ini untuk kembali ke lobby.");
           setModalGift({ status: false, msg: "", img: "/" });
           setAnswer([]);
           setGift("");
