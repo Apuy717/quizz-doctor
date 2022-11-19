@@ -28,8 +28,9 @@ export const HomeComponent: FC<iHomeComponent> = ({ page, onPlay, onAbout }) => 
       </div>
       <div className="-mt-10 z-50 px-5 w-full md:w-[40%]">
         <p className="text-transparent text-xl text-center bg-clip-text bg-gradient-to-b from-red-700 to-[#3D0E55]">
-          Survey dan quiz ini berdasarkan materi yang berada di learning booth. Jika anda belum membacanya, silahkan
-          mengunjungi <strong className="uppercase font-extrabold">learning booth!</strong>
+          Survey dan quiz ini berdasarkan materi yang berada di{" "}
+          <strong className="uppercase font-extrabold">learning booth.</strong> Jika anda belum membacanya, silahkan
+          mengunjungi <strong className="uppercase font-extrabold">learning booth</strong>
         </p>
       </div>
       <div className="flex flex-row z-10 mt-4">

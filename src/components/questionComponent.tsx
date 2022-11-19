@@ -34,7 +34,7 @@ export const QuestionComponent: FC<iQuestionComponent> = ({ page, question, onAn
           )}
           {page === 6 ? (
             <>
-              <p>{page}. SYNEOR</p>
+              <p>{page}. SYNEO</p>
               <span className="text-[0.4rem] -mt-1">R</span>
               <p>&nbsp;Terbukti Klinis untuk...</p>
             </>

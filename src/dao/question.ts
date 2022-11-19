@@ -48,7 +48,7 @@ class Question {
     {
       question: "Apa komposisi dari SYNEO?",
       listAnswer: [
-        { key: "a", value: "SYNEO adalah prebiotik lcFOS:scGOS 1:9 yang 5x lebih tinggi" },
+        { key: "a", value: "SYNEO adalah prebiotik lcFOS:scGOS 1:9 yang lebih tinggi" },
         { key: "b", value: "SYNEO adalah protein yang lebih tinggi" },
         {
           key: "c",
